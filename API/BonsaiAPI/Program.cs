@@ -9,6 +9,12 @@ builder.Services.AddDbContext<BonsaiContext>(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<BonsaiContext>();
+    db.Database.Migrate();
+}
+
 app.MapGet("/", () => "BonsaiAPI is running");
 
 app.Run();
