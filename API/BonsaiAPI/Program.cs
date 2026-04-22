@@ -7,6 +7,8 @@ builder.Services.AddDbContext<BonsaiContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BonsaiContext")
         ?? throw new InvalidOperationException("Connection string 'BonsaiContext' not found.")));
 
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -15,6 +17,8 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-app.MapGet("/", () => "BonsaiAPI is running");
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
