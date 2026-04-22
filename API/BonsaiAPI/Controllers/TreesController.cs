@@ -23,6 +23,7 @@ namespace BonsaiAPI.Controllers
         public async Task<ActionResult<IEnumerable<Tree>>> GetAllTrees()
         {
             return await _context.Trees
+                .Include(t => t.Species)
                 .OrderBy(t => t.Nickname)
                 .ToListAsync();
         }
@@ -33,7 +34,7 @@ namespace BonsaiAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Tree>> GetTree([FromRoute] int id)
         {
-            var tree = await _context.Trees.FirstOrDefaultAsync(t => t.Id == id);
+            var tree = await _context.Trees.Include(t => t.Species).FirstOrDefaultAsync(t => t.Id == id);
             if (tree == null)
             {
                 return NotFound();
