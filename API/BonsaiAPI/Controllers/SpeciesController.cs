@@ -24,5 +24,19 @@ namespace BonsaiAPI.Controllers
         {
             return await _context.Species.OrderBy(s => s.Name).ToListAsync();
         }
+
+        // GET: api/species/3
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Species>> GetSpecies([FromRoute] int id)
+        {
+            var species = await _context.Species.FindAsync(id);
+            if (species == null)
+            {
+                return NotFound();
+            }
+            return Ok(species);
+        }
     }
 }
