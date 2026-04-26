@@ -41,5 +41,16 @@ namespace BonsaiAPI.Controllers
             }
             return Ok(tree);
         }
+
+        // POST: api/trees
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<Tree>> PostTree([FromBody] Tree tree)
+        {
+            _context.Trees.Add(tree);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetTree), new { id = tree.Id }, tree);
+        }
     }
 }

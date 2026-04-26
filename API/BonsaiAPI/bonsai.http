@@ -17,3 +17,19 @@ GET http://localhost:5220/api/trees
 GET http://localhost:5220/api/trees/1
 
 ###
+
+### Create a new tree
+POST http://localhost:5220/api/trees
+Content-Type: application/json
+
+{
+  "nickname": "Tiny Giant",
+  "age": 5,
+  "height": 18.5,
+  "lastWateredDate": "2026-04-30T00:00:00",
+  "notes": "Purchased at a local market.",
+  "imageUrl": null,
+  "speciesId": 2
+}
+
+###
