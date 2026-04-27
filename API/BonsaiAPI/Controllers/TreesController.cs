@@ -89,5 +89,22 @@ namespace BonsaiAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        // DELETE: api/trees/1
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteTree([FromRoute] int id)
+        {
+            var tree = await _context.Trees.FindAsync(id);
+            if (tree == null)
+            {
+                return NotFound();
+            }
+
+            _context.Trees.Remove(tree);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
