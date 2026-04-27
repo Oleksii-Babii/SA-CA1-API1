@@ -59,5 +59,35 @@ namespace BonsaiAPI.Controllers
 
             return CreatedAtAction(nameof(GetTree), new { id = tree.Id }, tree);
         }
+
+        // PUT: api/trees/1
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> PutTree([FromRoute] int id, [FromBody] Tree tree)
+        {
+            if (id != tree.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            var existing = await _context.Trees.FindAsync(id);
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            existing.Nickname = tree.Nickname;
+            existing.Age = tree.Age;
+            existing.Height = tree.Height;
+            existing.LastWateredDate = tree.LastWateredDate;
+            existing.Notes = tree.Notes;
+            existing.ImageUrl = tree.ImageUrl;
+            existing.SpeciesId = tree.SpeciesId;
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
