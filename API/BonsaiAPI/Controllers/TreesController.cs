@@ -45,8 +45,15 @@ namespace BonsaiAPI.Controllers
         // POST: api/trees
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Tree>> PostTree([FromBody] Tree tree)
         {
+            var speciesExists = await _context.Species.AnyAsync(s => s.Id == tree.SpeciesId);
+            if (!speciesExists)
+            {
+                return BadRequest("Invalid SpeciesId.");
+            }
+
             _context.Trees.Add(tree);
             await _context.SaveChangesAsync();
 
