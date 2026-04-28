@@ -42,6 +42,20 @@ namespace BonsaiAPI.Controllers
             return Ok(tree);
         }
 
+        // GET: api/trees/search?name=old
+        [HttpGet("search")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<Tree>>> SearchTrees([FromQuery] string name)
+        {
+            var results = await _context.Trees
+                .Include(t => t.Species)
+                .Where(t => t.Nickname.ToLower().Contains(name.ToLower()))
+                .OrderBy(t => t.Nickname)
+                .ToListAsync();
+
+            return Ok(results);
+        }
+
         // POST: api/trees
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]

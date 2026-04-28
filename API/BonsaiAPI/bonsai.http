@@ -18,6 +18,11 @@ GET http://localhost:5220/api/trees/1
 
 ###
 
+### Search trees by name
+GET http://localhost:5220/api/trees/search?name=old
+
+###
+
 ### Create a new tree
 POST http://localhost:5220/api/trees
 Content-Type: application/json
