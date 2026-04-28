@@ -33,3 +33,25 @@ Content-Type: application/json
 }
 
 ###
+
+### Update an existing tree
+PUT http://localhost:5220/api/trees/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nickname": "Old Man",
+  "age": 26,
+  "height": 46.0,
+  "lastWateredDate": "2026-05-01T00:00:00",
+  "notes": "Repotted again. Doing well.",
+  "imageUrl": null,
+  "speciesId": 1
+}
+
+###
+
+### Delete a tree
+DELETE http://localhost:5220/api/trees/4
+
+###
