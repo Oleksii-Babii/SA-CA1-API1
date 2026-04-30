@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using BonsaiAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseWebRoot("wwwroot");
 
 builder.Services.AddDbContext<BonsaiContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BonsaiContext")
@@ -24,6 +25,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+var webRootPath = app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+Directory.CreateDirectory(webRootPath);
+Directory.CreateDirectory(Path.Combine(webRootPath, "uploads"));
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<BonsaiContext>();
@@ -32,6 +37,8 @@ using (var scope = app.Services.CreateScope())
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseStaticFiles();
 
 app.UseCors();
 
