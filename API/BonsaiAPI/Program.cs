@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using BonsaiAPI.Data;
@@ -21,6 +22,12 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
+// Allow image uploads up to 10 MB
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
 });
 
 var app = builder.Build();
