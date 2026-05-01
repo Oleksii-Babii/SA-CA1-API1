@@ -7,9 +7,12 @@ using System.Runtime.InteropServices;
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseWebRoot("wwwroot");
 
-var useInMemoryDatabase = RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-    || !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-    || builder.Environment.EnvironmentName == "Testing";
+var connectionString = builder.Configuration.GetConnectionString("BonsaiContext");
+
+var useInMemoryDatabase = builder.Environment.EnvironmentName == "Testing"
+    || string.IsNullOrWhiteSpace(connectionString)
+    || connectionString.Contains("(localdb)", StringComparison.OrdinalIgnoreCase)
+        && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 builder.Services.AddDbContext<BonsaiContext>(options =>
 {
@@ -19,8 +22,7 @@ builder.Services.AddDbContext<BonsaiContext>(options =>
     }
     else
     {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("BonsaiContext")
-            ?? throw new InvalidOperationException("Connection string 'BonsaiContext' not found."));
+        options.UseSqlServer(connectionString!);
     }
 });
 
