@@ -7,7 +7,9 @@ using System.Runtime.InteropServices;
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseWebRoot("wwwroot");
 
-var useInMemoryDatabase = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+var useInMemoryDatabase = RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+    || !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+    || builder.Environment.EnvironmentName == "Testing";
 
 builder.Services.AddDbContext<BonsaiContext>(options =>
 {
