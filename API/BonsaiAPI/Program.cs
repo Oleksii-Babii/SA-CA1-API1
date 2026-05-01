@@ -2,13 +2,25 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using BonsaiAPI.Data;
+using System.Runtime.InteropServices;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseWebRoot("wwwroot");
 
+var useInMemoryDatabase = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
 builder.Services.AddDbContext<BonsaiContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BonsaiContext")
-        ?? throw new InvalidOperationException("Connection string 'BonsaiContext' not found.")));
+{
+    if (useInMemoryDatabase)
+    {
+        options.UseInMemoryDatabase("BonsaiLocalDev");
+    }
+    else
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("BonsaiContext")
+            ?? throw new InvalidOperationException("Connection string 'BonsaiContext' not found."));
+    }
+});
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -39,7 +51,14 @@ Directory.CreateDirectory(Path.Combine(webRootPath, "uploads"));
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<BonsaiContext>();
-    db.Database.Migrate();
+    if (useInMemoryDatabase)
+    {
+        db.Database.EnsureCreated();
+    }
+    else
+    {
+        db.Database.Migrate();
+    }
 }
 
 app.UseSwagger();
