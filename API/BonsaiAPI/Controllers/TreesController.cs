@@ -143,6 +143,7 @@ namespace BonsaiAPI.Controllers
             existing.LastWateredDate = tree.LastWateredDate;
             existing.Notes = tree.Notes;
             existing.ImageUrl = tree.ImageUrl;
+            existing.ImageData = tree.ImageData ?? existing.ImageData;
             existing.SpeciesId = tree.SpeciesId;
 
             await _context.SaveChangesAsync();
